@@ -32,6 +32,17 @@ spec:
         app.kubernetes.io/name: snapshot-controller
     spec:
       serviceAccountName: snapshot-controller
+
+      # Schedule onto control-plane nodes only
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+
+      # Allow running on control-plane tainted nodes
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+
       containers:
         - name: snapshot-controller
           image: registry.k8s.io/sig-storage/snapshot-controller:v8.2.1
